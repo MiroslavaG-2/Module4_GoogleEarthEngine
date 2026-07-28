@@ -4,3 +4,9 @@
 lines if you want*/
 
 print('Hello, World!')
+
+/* Variables are used to store objects, 
+and are defined using the keyword var. */
+var the_answer = 42; //number
+
+
