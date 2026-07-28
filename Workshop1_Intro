@@ -1,0 +1,6 @@
+// Use two forward slashes for writing comments.
+
+/* or slash and star to write multi-comment
+lines if you want*/
+
+print('Hello, World!')
