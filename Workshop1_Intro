@@ -85,6 +85,12 @@ var greet = function(name){
 print(greet('World'));
 print(greet('Readers'));
 
+// EARTH ENGINE DOCS
+/* These are tools  that can be used to address questions
+and build on your analysis. There can be compiled together
+in an appropiate order to answer complex questions */
+
+
 
 
 
