@@ -32,7 +32,9 @@ var population = 873965
 print (population) /* good habit to print everything
 to make sure you know what you're working with */
 
-
+/* when printing a lot you can also use an argument to
+give a descriptive sting as to what it is you are printing */
+print('The value for the population variable is:', population)
 
 
 
