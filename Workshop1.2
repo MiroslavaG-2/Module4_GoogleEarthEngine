@@ -1,3 +1,6 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var image = ee.Image("CGIAR/SRTM90_V4");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 // MB5370 - MODULE 4 - Workshop1.2
 // VISUALISING DATA IN EARTH ENGINE
 // Miroslava Guerrero
@@ -11,9 +14,13 @@ Map.setCenter(174.0638, -39.298, 11); // zooms into a volcano in NZ
 // IMAGES
 // import data from EE data catalogue and add it as a layer
 // starting with a dataset of elevation for the whole world
+/* using the search bar at the top of the console search 
+for SRTM. This is an image dataset, essentially pixels with 
+an associated value as a way of showing spatial data */
 
-
-
+// Import SRTM data
+var dataset = ee.Image("CGIAR/SRTM90_V4")
+print (dataset) // Look at the data properties
 
 
 
