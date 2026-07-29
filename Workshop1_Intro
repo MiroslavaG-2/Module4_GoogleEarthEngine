@@ -24,6 +24,14 @@ doesn't require it */
 // when printing the variable city we get the value assigned to it
 print (city)
 
+/* when assigning a text value, the variable is automatically
+assigned the type string, when assigning numbers, the
+variable type is number */
+// below it creates a variable and assigns a number as its value
+var population = 873965
+print (population)
+
+
 
 
 
