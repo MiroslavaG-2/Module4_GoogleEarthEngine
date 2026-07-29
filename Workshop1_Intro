@@ -67,9 +67,23 @@ label instead of a numeric index. This is known as the key,
 and can be used to retrieve the value of an item */
 
 
+// FUNCTIONS
+/* they keep all the technical code in a single spot
+in the scrpt, which minimises the chance of making an error
+while writing the same statement lots of times */
+/* use functions to set up common operations, expected to
+be reused throughout a script */
+var my_hello_function = function(string) {
+  return 'Hello' + string + '!'
+};
+print(my_hello_function('world'));
 
-
-
+// another example
+var greet = function(name){
+  return 'Hello' + name
+};
+print(greet('World'));
+print(greet('Readers'));
 
 
 
