@@ -1,7 +1,10 @@
+// MB5370 - MODULE 4 - WORKSHOP 1
+// Miroslava Guerrero
+
+// Basics
 // Use two forward slashes for writing comments.
 /* or slash and star to write multi-comment
 lines if you want*/
-
 print('Hello, World!')
 
 // VARIABLES
@@ -40,7 +43,6 @@ print('The value for the population variable is:', population)
 print statements from the script, which will make it run 
 faster (as it doesn't have to send many results back) */
 
-
 // LISTS
 // lists help store lots of values in a single variable
 var cities = ['San Francisco', 'Los Angeles', 'New York', 
@@ -49,7 +51,6 @@ print(cities) /* in the console when we expand the list there
 is a number next to each value, which is the index of each
 item. it allows us to refer to each item using the numeric
 value */
-
 
 // OBJECTS
 /* these allow to store key-vlue pairs, where each value can
@@ -65,7 +66,6 @@ var cityData = {'city': 'San Francisco',
 print(cityData) /* in the console now each item has a 
 label instead of a numeric index. This is known as the key,
 and can be used to retrieve the value of an item */
-
 
 // FUNCTIONS
 /* they keep all the technical code in a single spot
@@ -102,7 +102,6 @@ arguments needed */
 methods available to you. This option will present you 
 with more information as to how to apply it */
 
-
 // COMPUTING WITH EARTH ENGINE
 // lets make a computation by adding two numbers together
 var a = 1;
@@ -118,6 +117,33 @@ compute than when using javascript. But doing it the earth
 engine way is better, as only doing it via javascript will
 lead to running into errors, as there is only so much your
 browser can compute */
+
+// EXAMPLE OF COMPUTING IN EARTH ENGINE
+/* the following example also makes point as to why we 
+need to use Earth engine functions and NOT javascript
+functions */
+/* javascript is used as a way to access the earth engine
+API, which is also accessible through python */
+
+// Task requires to create a list from 1980-2020 with 5 year interval
+// first switch to docs tab and open list module
+/* browse functions, find ee.List.sequence, this generates
+a sequence of numbers from a given value to the end value.
+with an optional parameter 'step' to indicate the increment
+between each number. */
+var yearList = ee.List.sequence(1980,2020,5);
+print(yearList);
+
+// EARTH ENGINE DATA STRUCTURES
+
+
+
+
+
+
+
+
+
 
 
 
