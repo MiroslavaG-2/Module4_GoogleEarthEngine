@@ -103,6 +103,23 @@ methods available to you. This option will present you
 with more information as to how to apply it */
 
 
+// COMPUTING WITH EARTH ENGINE
+// lets make a computation by adding two numbers together
+var a = 1;
+var b = 2;
+print(a)
+var result = a + b
+print (result, 'javascript way')
+
+var result = ee.Number(a).add(b);
+print(result,'Earth Engine way');
+/* doing it the earth engine way takes a bit longer to 
+compute than when using javascript. But doing it the earth
+engine way is better, as only doing it via javascript will
+lead to running into errors, as there is only so much your
+browser can compute */
+
+
 
 
 
