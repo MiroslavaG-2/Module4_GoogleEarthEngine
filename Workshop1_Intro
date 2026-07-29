@@ -14,4 +14,18 @@ var the_answer = 42; //number
 
 /* The code below assigns the text 
 'San Francisco' to the variable named city */
+var city = 'San Francisco';
+
+// can use either '' or "". but be consistent
+/* each statement of script typically ends with a 
+semicolon, althrough Earth Engine's code editor
+doesn't require it */
+
+// when printing the variable city we get the value assigned to it
+print (city)
+
+
+
+
+
 
