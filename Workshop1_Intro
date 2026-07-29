@@ -1,10 +1,10 @@
 // Use two forward slashes for writing comments.
-
 /* or slash and star to write multi-comment
 lines if you want*/
 
 print('Hello, World!')
 
+// VARIABLES
 /* Variables are used to store objects, 
 and are defined using the keyword var. */
 
@@ -41,6 +41,7 @@ print statements from the script, which will make it run
 faster (as it doesn't have to send many results back) */
 
 
+// LISTS
 
 
 
