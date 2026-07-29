@@ -35,6 +35,16 @@ visParms object */
 Map.addLayer(dataset, {min: 0, max: 2500, palette: ['blue', 'green',
 'red']},'custom palette');
 
+// Set up visualisation parameters
+var elevationVis = {
+  min: 0,
+  max: 2500,
+  palette: ['0000ff', '00ffff', 'ffff00', 'ff0000', 'ffffff'] /* use
+  hex colour codes, bc you can use a much larger range of colours */
+};
+
+// Add the data layer to the map
+Map.addLayer(dataset, elevationVis, 'Elevation');
 
 
 
