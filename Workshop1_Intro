@@ -42,7 +42,29 @@ faster (as it doesn't have to send many results back) */
 
 
 // LISTS
+// lists help store lots of values in a single variable
+var cities = ['San Francisco', 'Los Angeles', 'New York', 
+'Atlanta'];
+print(cities) /* in the console when we expand the list there
+is a number next to each value, which is the index of each
+item. it allows us to refer to each item using the numeric
+value */
 
+
+// OBJECTS
+/* these allow to store key-vlue pairs, where each value can
+be referred to by its key */
+// few important things about JavaScript syntax:
+/* we can use multiple lines to define the object. only after
+the semicolon the comman is complete */
+/* camel case is when we join multiple words into a single 
+variable, for example cityData. */
+var cityData = {'city': 'San Francisco',
+'coordinates': [-122.4194, 37.7749],
+'population': 873965};
+print(cityData) /* in the console now each item has a 
+label instead of a numeric index. This is known as the key,
+and can be used to retrieve the value of an item */
 
 
 
