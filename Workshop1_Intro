@@ -36,6 +36,22 @@ to make sure you know what you're working with */
 give a descriptive sting as to what it is you are printing */
 print('The value for the population variable is:', population)
 
+/* once you have an idea of what the script does, remove all 
+print statements from the script, which will make it run 
+faster (as it doesn't have to send many results back) */
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
