@@ -7,6 +7,11 @@ print('Hello, World!')
 
 /* Variables are used to store objects, 
 and are defined using the keyword var. */
+
+/* the code below creates a variable called the_answer
+whith the output 42 */
 var the_answer = 42; //number
 
+/* The code below assigns the text 
+'San Francisco' to the variable named city */
 
