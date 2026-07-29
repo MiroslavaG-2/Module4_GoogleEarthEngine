@@ -1,12 +1,10 @@
-/**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var image = ee.Image("CGIAR/SRTM90_V4");
-/***** End of imports. If edited, may not auto-convert in the playground. *****/
 // MB5370 - MODULE 4 - Workshop1.2
 // VISUALISING DATA IN EARTH ENGINE
 // Miroslava Guerrero
 
 // CONFIGURING YOUR MAP
 Map.setOptions('SATELLITE') //sets base layer as satellite
+Map.setOptions('TERRAIN')
 var snazzy = require("users/aazuspan/snazzy:styles");
 snazzy.addStyle("https://snazzymaps.com/style/48750/blank-map", "Blank");
 Map.setCenter(174.0638, -39.298, 11); // zooms into a volcano in NZ
@@ -19,13 +17,23 @@ for SRTM. This is an image dataset, essentially pixels with
 an associated value as a way of showing spatial data */
 
 // Import SRTM data
-var dataset = ee.Image("CGIAR/SRTM90_V4")
+var dataset = ee.Image("CGIAR/SRTM90_V4") // found when looking for SRTM
 print (dataset) // Look at the data properties
+Map.addLayer(dataset) // adds the dataset to the map window below
 
+// Customise data layers
+/* we can add some parameters to the Map.addLayer. visParms, lets set 
+the minimum and maximum pixel values to display */
+Map.addLayer(dataset, {min: 0, max: 2500}, 'custom visualization'); 
+/* the vis parameter is an object with properties specifying 
+the min and max value*/
+/* the third parameter is the name of the layer, which can be seen in
+the top right of the map window under layers */
 
-
-
-
+/* we can now make it colourful and add more info to the 
+visParms object */
+Map.addLayer(dataset, {min: 0, max: 2500, palette: ['blue', 'green',
+'red']},'custom palette');
 
 
 
