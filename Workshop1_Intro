@@ -29,7 +29,8 @@ assigned the type string, when assigning numbers, the
 variable type is number */
 // below it creates a variable and assigns a number as its value
 var population = 873965
-print (population)
+print (population) /* good habit to print everything
+to make sure you know what you're working with */
 
 
 
