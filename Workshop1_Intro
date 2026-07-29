@@ -89,7 +89,18 @@ print(greet('Readers'));
 /* These are tools  that can be used to address questions
 and build on your analysis. There can be compiled together
 in an appropiate order to answer complex questions */
+/* If there is a feature you want to further anlyse, looking in th
+in the ee.Feature section of docs you will see the types of 
+tools you will encounter in ArcGIS, like some basic geospatial
+operations (buffer, dissolve, convexHull). */
+/* When we click on these tools we can see more infomation
+about them, including what they can be used for and the 
+arguments needed */
 
+// USER GUIDE
+/* can also be used to read more about the functions and 
+methods available to you. This option will present you 
+with more information as to how to apply it */
 
 
 
