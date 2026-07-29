@@ -1,4 +1,4 @@
-// MB5370 - MODULE 4 - WORKSHOP 1
+// MB5370 - MODULE 4 - WORKSHOP 1 Introduction
 // Miroslava Guerrero
 
 // Basics
@@ -135,9 +135,20 @@ var yearList = ee.List.sequence(1980,2020,5);
 print(yearList);
 
 // EARTH ENGINE DATA STRUCTURES
+/* The two most fundamental geographic data stuctures
+in earth engine are 'Image' and 'Feature'. which correspond
+to raster and vector data types, respectively */
 
+/* Images - consist of a grid with data values stored 
+in pixels - in EE they are composed of bands
+and a dictionary of properties (metadata)*/
+// A stack of images is handled by ImageCollection
 
-
+/* Features - consist of a set of vertices (points)
+with lines joining them. in EE they are composed of 
+a geometry and dictionary of proterties (metadata). 
+a feature w/o metadata is a geometry */
+// A collection of features is handled by a FeatureCollection
 
 
 
