@@ -42,17 +42,39 @@ var elevationVis = {
   palette: ['0000ff', '00ffff', 'ffff00', 'ff0000', 'ffffff'] /* use
   hex colour codes, bc you can use a much larger range of colours */
 };
-
 // Add the data layer to the map
 Map.addLayer(dataset, elevationVis, 'Elevation');
 
-// Inspector tab
+// INSPECTOR TAB
 /* on this tab you can click on the map and find the 
 elevation of where you clicked and type of object */
 // Mt. Taranaki has an elevation of 2417 
 // The SRTM data object type is image
+// The pixel values on the ocean shows: elevation masked
 
+// LAYER BUTTON
+/* on the map pane, use the layers button to change
+the opacity of the data layer. Even better if we set
+this up in the Map.addLayer by adding extra parameters
+for the arguments shown (true, false) and opacity 
+(up to 1). e.g true, 0.6) */
 
+// FEATURES
+/* let's take a look at a vector dataset, also called 
+geometries, which can be points, lines or polygons.
+with attributes associated with them */
+// Using the world's protected areas for example
+// Add the protected planet data
+var protected_areas = ee.FeatureCollection("WCMC/WDPA/current/polygons")
+Map.addLayer(protected_areas) //visualize in map
+// add colours and label to see which layers are which
+Map.addLayer(protected_areas, {color: 'darkgreen'}, 'Protected Areas')
+
+/* There is a minor change in how we visualise
+features vs images. For features you specify the argument
+colour rather than palette in your visParams. */
+/* the curly brackets indicate an object, so vis param
+are given by an object */
 
 
 
