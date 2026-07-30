@@ -3,27 +3,27 @@
 // 
 // USING DATA FROM WORKSHOP 1.2
 // CONFIGURING YOUR MAP
-Map.setOptions('SATELLITE') //sets base layer as satellite
+// Map.setOptions('SATELLITE') //sets base layer as satellite
 Map.setOptions('TERRAIN')
-var snazzy = require("users/aazuspan/snazzy:styles");
-snazzy.addStyle("https://snazzymaps.com/style/48750/blank-map", "Blank");
+// var snazzy = require("users/aazuspan/snazzy:styles");
+// snazzy.addStyle("https://snazzymaps.com/style/48750/blank-map", "Blank");
 Map.setCenter(174.0638, -39.298, 11); // zooms into a volcano in NZ
 
 // IMAGES
 // Import SRTM data
 var dataset = ee.Image("CGIAR/SRTM90_V4") // found when looking for SRTM
-print (dataset) // Look at the data properties
+// print (dataset) // Look at the data properties
 Map.addLayer(dataset) // adds the dataset to the map window below
 
 // Customise data layers
 /* we can add some parameters to the Map.addLayer. visParms, lets set 
 the minimum and maximum pixel values to display */
-Map.addLayer(dataset, {min: 0, max: 2500}, 'custom visualization'); 
+// Map.addLayer(dataset, {min: 0, max: 2500}, 'custom visualization'); 
 
 /* we can now make it colourful and add more info to the 
 visParms object */
-Map.addLayer(dataset, {min: 0, max: 2500, palette: ['blue', 'green',
-'red']},'custom palette');
+// Map.addLayer(dataset, {min: 0, max: 2500, palette: ['blue', 'green',
+// 'red']},'custom palette');
 
 // Set up visualisation parameters
 var elevationVis = {
@@ -38,7 +38,7 @@ Map.addLayer(dataset, elevationVis, 'Elevation');
 // FEATURES
 // Add the protected planet data
 var protected_areas = ee.FeatureCollection("WCMC/WDPA/current/polygons")
-Map.addLayer(protected_areas) //visualize in map
+// Map.addLayer(protected_areas) //visualize in map
 // add colours and label to see which layers are which
 Map.addLayer(protected_areas, {color: 'darkgreen'}, 'Protected Areas')
 // 
@@ -52,7 +52,7 @@ available via the data catalogue */
 Mt egmont national park. Around that we have many 
 other features from the feature collection */
 // to see how many features there are in the collection
-print('No of protected areas:', protected_areas.size())
+// print('No of protected areas:', protected_areas.size())
 // above result gives the no. protected areas on earth
 
 // METADATA FILTERS
@@ -60,7 +60,7 @@ print('No of protected areas:', protected_areas.size())
 parks we can use a filter to select only the
 features from the feature collection that are
 in category 2 national parks */
-print (protected_areas.first()) // looking just at the first feature is much faster.
+// print (protected_areas.first()) // looking just at the first feature is much faster.
 
 // Filter only for level II protected areas
 var iucn_pa = protected_areas.filter(ee.Filter.eq('IUCN_CAT', 'II'));
@@ -70,8 +70,8 @@ specific features in a collection, and can be
 done with anything from the properties */
 
 // filter date
-var iucn_pre1980 = protected_areas.filter(ee.Filter.lte('STATUS_YR', 1980));
-Map.addLayer(iucn_pa, {color: 'white'}, 'PAs in 1980')
+// var iucn_pre1980 = protected_areas.filter(ee.Filter.lte('STATUS_YR', 1980));
+// Map.addLayer(iucn_pa, {color: 'white'}, 'PAs in 1980')
 /* to see what the protected areas looked like
 in 1980s vs today */
 
@@ -85,16 +85,29 @@ limits of the location we want to filter
 data for */
 // Import countries
 var countries = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
-print (countries) // look at it. // how to find a country name?
-Map.addLayer(countries) // look at it.
+// print (countries) // look at it. // how to find a country name?
+// Map.addLayer(countries) // look at it.
 // New Zealand only
 var nz = countries.filter(ee.Filter.equals('country_na', 'New Zealand'))
-print (nz)
+// print (nz)
 Map.addLayer(nz) // look at it.
 
+/* now we use that to apply a spatial filter to 
+the global protected areas data */
+// Spatial filter PAs only in NZ
+// var nz_pas = protected_areas.filter(ee.Filter.bounds(nz))
+// print ('Number of PAs in NZ:', nz_pas.size())
+// add them in different colour
+// Map.addLayer(nz_pas, {color:'yellow'}, 'NZ PAs only')
 
+/* now to not have many small steps we can
+write all of it into one statement */
+// Link them all into one statement
+var nz_national_parks = protected_areas
+    .filter(ee.Filter.eq('IUCN_CAT', 'II')) // filter only NPs
+    .filter(ee.Filter.bounds(nz)) // filter to NZ
 
-
+print ('Number of National Parks in NZ:', nz_national_parks.size())
 
 
 
