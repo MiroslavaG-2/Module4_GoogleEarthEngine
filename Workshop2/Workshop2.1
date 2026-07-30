@@ -56,9 +56,24 @@ print('No of protected areas:', protected_areas.size())
 // above result gives the no. protected areas on earth
 
 // METADATA FILTERS
+/* to only show the ones that are national 
+parks we can use a filter to select only the
+features from the feature collection that are
+in category 2 national parks */
+print (protected_areas.first()) // looking just at the first feature is much faster.
 
+// Filter only for level II protected areas
+var iucn_pa = protected_areas.filter(ee.Filter.eq('IUCN_CAT', 'II'));
+Map.addLayer(iucn_pa, {color: 'yellow'}, 'National Parks')
+/*Filtering collections can help you find
+specific features in a collection, and can be
+done with anything from the properties */
 
-
+// filter date
+var iucn_pre1980 = protected_areas.filter(ee.Filter.lte('STATUS_YR', 1980));
+Map.addLayer(iucn_pa, {color: 'white'}, 'PAs in 1980')
+/* to see what the protected areas looked like
+in 1980s vs today */
 
 
 
