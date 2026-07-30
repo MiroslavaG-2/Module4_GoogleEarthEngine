@@ -49,29 +49,13 @@ Map.addLayer(mpaOceanOnly, {}, 'Marine Protected Areas (ocean only)');
 
 // PART 4 - POLISH THE VISUALISATION
 // Build a legend panel
-var legend = ui.Panel({style: {position: 'bottom-left', padding: '8px 15px'}});
-
-var legendTitle = ui.Label({
-  value: 'Deep Ocean Ecosystems',
-  style: {fontWeight: 'bold', fontSize: '16px', margin: '0 0 4px 0'}
-});
-legend.add(legendTitle);
-
-var makeRow = function(color, name) {
-  var colorBox = ui.Label({
-    style: {backgroundColor: color, padding: '8px', margin: '4px 0 4px 0'}
-  });
-  var description = ui.Label({value: name, style: {margin: '4px 0 4px 6px'}});
-  return ui.Panel({widgets: [colorBox, description], layout: ui.Panel.Layout.Flow('horizontal')});
-};
-
-legend.add(makeRow('#1a0033', 'Hadal trenches & troughs (>6000m)'));
-legend.add(makeRow('#0d47a1', 'Abyssal plains (3000-6000m)'));
-legend.add(makeRow('#00acc1', 'Continental & island slopes (250-3000m)'));
-legend.add(makeRow('#ff6f00', 'Submarine canyons (>200m, slope >6°)'));
-legend.add(makeRow('#ffffff', 'Marine Protected Areas (outline)'));
-
-Map.add(legend);
+ var makeRow = function(color, name) {
+   var colorBox = ui.Label({
+     style: {backgroundColor: color, padding: '8px', margin: '4px 0 4px 0'}
+   });
+   var description = ui.Label({value: name, style: {margin: '4px 0 4px 6px'}});
+   return ui.Panel({widgets: [colorBox, description], layout: ui.Panel.Layout.Flow('horizontal')});
+ };
 
 // INSERT SMALL MAP OF AREA WITH CANYON
 // --- Create a secondary "inset" map focused on a well-known submarine canyon ---
@@ -112,9 +96,25 @@ var select = ui.Select({
 // Combine label + dropdown + inset map into one panel
 var insetPanel = ui.Panel({
   widgets: [insetLabel, select, insetMap],
-  style: {width: '350px', height: '340px', position: 'top-right'}
+  style: {width: '350px', position: 'top-right'}
 });
 insetMap.style().set({height: '260px'});
 
 ui.root.add(insetPanel);
+
+// MOVE LEGEND
+// Add a small legend title
+insetPanel.add(ui.Label({
+  value: 'Legend',
+  style: {fontWeight: 'bold', fontSize: '13px', margin: '8px 8px 2px 8px'}
+}));
+
+// Add NEW legend row widgets (don't reuse the ones already in your original legend panel)
+insetPanel.add(makeRow('#1a0033', 'Hadal trenches & troughs (>6000m)'));
+insetPanel.add(makeRow('#0d47a1', 'Abyssal plains (3000-6000m)'));
+insetPanel.add(makeRow('#00acc1', 'Continental & island slopes (250-3000m)'));
+insetPanel.add(makeRow('#ff6f00', 'Submarine canyons (>200m, slope >6°)'));
+insetPanel.add(makeRow('#ffffff', 'Marine Protected Areas'));
+
+
 
