@@ -87,6 +87,11 @@ data for */
 var countries = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
 print (countries) // look at it. // how to find a country name?
 Map.addLayer(countries) // look at it.
+// New Zealand only
+var nz = countries.filter(ee.Filter.equals('country_na', 'New Zealand'))
+print (nz)
+Map.addLayer(nz) // look at it.
+
 
 
 
