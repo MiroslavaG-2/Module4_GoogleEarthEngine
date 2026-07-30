@@ -1,10 +1,62 @@
 // MB5370 - Module 4 - Workshop 2
 // Miroslava Guerrero
+// 
+// USING DATA FROM WORKSHOP 1.2
+// CONFIGURING YOUR MAP
+Map.setOptions('SATELLITE') //sets base layer as satellite
+Map.setOptions('TERRAIN')
+var snazzy = require("users/aazuspan/snazzy:styles");
+snazzy.addStyle("https://snazzymaps.com/style/48750/blank-map", "Blank");
+Map.setCenter(174.0638, -39.298, 11); // zooms into a volcano in NZ
 
+// IMAGES
+// Import SRTM data
+var dataset = ee.Image("CGIAR/SRTM90_V4") // found when looking for SRTM
+print (dataset) // Look at the data properties
+Map.addLayer(dataset) // adds the dataset to the map window below
+
+// Customise data layers
+/* we can add some parameters to the Map.addLayer. visParms, lets set 
+the minimum and maximum pixel values to display */
+Map.addLayer(dataset, {min: 0, max: 2500}, 'custom visualization'); 
+
+/* we can now make it colourful and add more info to the 
+visParms object */
+Map.addLayer(dataset, {min: 0, max: 2500, palette: ['blue', 'green',
+'red']},'custom palette');
+
+// Set up visualisation parameters
+var elevationVis = {
+  min: 0,
+  max: 2500,
+  palette: ['0000ff', '00ffff', 'ffff00', 'ff0000', 'ffffff'] /* use
+  hex colour codes, bc you can use a much larger range of colours */
+};
+// Add the data layer to the map
+Map.addLayer(dataset, elevationVis, 'Elevation');
+
+// FEATURES
+// Add the protected planet data
+var protected_areas = ee.FeatureCollection("WCMC/WDPA/current/polygons")
+Map.addLayer(protected_areas) //visualize in map
+// add colours and label to see which layers are which
+Map.addLayer(protected_areas, {color: 'darkgreen'}, 'Protected Areas')
+// 
+// 
+// 
 // FILTERING COLLECTIONS
 /* one important thing to lear is how to limit
 your analyses and how to capitalise on the data
 available via the data catalogue */
+/* we can see one large feature - the 
+Mt egmont national park. Around that we have many 
+other features from the feature collection */
+// to see how many features there are in the collection
+print('No of protected areas:', protected_areas.size())
+// above result gives the no. protected areas on earth
+
+// METADATA FILTERS
+
 
 
 
