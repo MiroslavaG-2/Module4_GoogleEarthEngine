@@ -75,6 +75,33 @@ Map.addLayer(iucn_pa, {color: 'white'}, 'PAs in 1980')
 /* to see what the protected areas looked like
 in 1980s vs today */
 
+// SPATIAL FILTERS
+/* we can use a spatial filter to count how 
+many protected areas are in NZ, as the metadata
+of protected areas doesn't have info about 
+which country each protected area is in */
+/* first we need a geometry indicating the 
+limits of the location we want to filter 
+data for */
+// Import countries
+var countries = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
+print (countries) // look at it. // how to find a country name?
+Map.addLayer(countries) // look at it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
