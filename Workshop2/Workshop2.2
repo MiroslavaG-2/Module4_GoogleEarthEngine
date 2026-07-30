@@ -1,0 +1,120 @@
+// MB5370 - MODULE 4 - WORKSHOP 2.2
+/* ASSIGNMENT: MAPPING THE WORLD'S 
+DEEP OCEAN ECOSYSTEMS */
+// Miroslava Guerrero
+
+/* The task is to build a map of the world's
+major deep ocean ecosystems*/
+/* with these type of maps we can assess global
+conservation targets set by the convention on 
+biological diversity, which require info on how
+much of each ecosystem type on earth is within
+a protected area */
+
+// PART 1 - IMPORT THE DATA
+// Import ETOPO1 and select the bedrock band
+var etopo = ee.Image('NOAA/NGDC/ETOPO1');
+var bedrock = etopo.select('bedrock');
+Map.setCenter(0, 0, 2);
+Map.addLayer(bedrock, {min: -8000, max: 0, palette: ['000033','003366','0066cc','66ccff']}, 'Bedrock elevation', false);
+
+// PART 2 - BUILD THE ECOSYSTEM TYPE LAYERS
+// --- Hadal trenches and troughs (>6000 m depth) ---
+var hadal = bedrock.lt(-6000).selfMask();
+// --- Abyssal plains (3000-6000 m depth) ---
+var abyssal = bedrock.lt(-3000).and(bedrock.gte(-6000)).selfMask();
+// --- Continental and island slopes (250-3000 m depth) ---
+var slopeZone = bedrock.lt(-250).and(bedrock.gte(-3000)).selfMask();
+// --- Submarine canyons (>200 m depth AND slope >6 degrees) ---
+var slopeDegrees = ee.Terrain.slope(bedrock);
+var canyons = bedrock.lt(-200).and(slopeDegrees.gt(6)).selfMask();
+// Add each to the map with distinct colours
+Map.addLayer(hadal, {palette: ['1a0033']}, 'Hadal trenches & troughs (>6000m)');       // deep purple
+Map.addLayer(abyssal, {palette: ['0d47a1']}, 'Abyssal plains (3000-6000m)');           // deep blue
+Map.addLayer(slopeZone, {palette: ['00acc1']}, 'Continental & island slopes (250-3000m)'); // teal/cyan
+Map.addLayer(canyons, {palette: ['ff6f00']}, 'Submarine canyons (>200m, slope >6°)');  // bright orange
+
+// PART 3 - ADD A VECTOR DATASET
+// Marine Protected Areas from the World Database on Protected Areas
+var wdpa = ee.FeatureCollection('WCMC/WDPA/current/polygons');
+var mpas = wdpa.filter(ee.Filter.neq('MARINE', '2')); // keep only marine protected areas
+// Create an ocean mask (anywhere bedrock elevation is below sea level)
+var oceanMask = bedrock.lt(0);
+// Style your MPA collection as before
+var mpaImage = mpas.style({color: 'white', fillColor: '00000000', width: 1});
+// Mask out anything that falls on land
+var mpaOceanOnly = mpaImage.updateMask(oceanMask);
+Map.addLayer(mpaOceanOnly, {}, 'Marine Protected Areas (ocean only)');
+
+
+// PART 4 - POLISH THE VISUALISATION
+// Build a legend panel
+ var makeRow = function(color, name) {
+   var colorBox = ui.Label({
+     style: {backgroundColor: color, padding: '8px', margin: '4px 0 4px 0'}
+   });
+   var description = ui.Label({value: name, style: {margin: '4px 0 4px 6px'}});
+   return ui.Panel({widgets: [colorBox, description], layout: ui.Panel.Layout.Flow('horizontal')});
+ };
+
+// INSERT SMALL MAP OF AREA WITH CANYON
+// --- Create a secondary "inset" map focused on a well-known submarine canyon ---
+var insetMap = ui.Map();
+insetMap.setOptions('TERRAIN');
+insetMap.setCenter(-122.0, 36.6, 10); // Monterey Canyon coordinates
+
+// Add all four ecosystem layers to the inset map
+insetMap.addLayer(hadal, {palette: ['1a0033']}, 'Hadal trenches & troughs (>6000m)');
+insetMap.addLayer(abyssal, {palette: ['0d47a1']}, 'Abyssal plains (3000-6000m)');
+insetMap.addLayer(slopeZone, {palette: ['00acc1']}, 'Continental & island slopes (250-3000m)');
+insetMap.addLayer(canyons, {palette: ['ff6f00']}, 'Submarine canyons (>200m, slope >6°)');
+insetMap.addLayer(mpaOceanOnly, {}, 'Marine Protected Areas');
+
+// Give the inset a small title
+var insetLabel = ui.Label({
+  value: 'Zoomed view: Monterey Canyon',
+  style: {fontWeight: 'bold', fontSize: '14px', margin: '4px 8px'}
+});
+
+// Optional: dropdown to switch between canyon locations
+var canyonLocations = {
+  'Monterey Canyon': [-122.0, 36.6, 10],
+  'Congo Canyon': [11.0, -6.0, 9],
+  'Zhemchug Canyon': [175.5, 58.0, 7]
+};
+
+var select = ui.Select({
+  items: Object.keys(canyonLocations),
+  onChange: function(name) {
+    var loc = canyonLocations[name];
+    insetMap.setCenter(loc[0], loc[1], loc[2]);
+    insetLabel.setValue('Zoomed view: ' + name);
+  },
+  value: 'Monterey Canyon'
+});
+
+// Combine label + dropdown + inset map into one panel
+var insetPanel = ui.Panel({
+  widgets: [insetLabel, select, insetMap],
+  style: {width: '350px', position: 'top-right'}
+});
+insetMap.style().set({height: '260px'});
+
+ui.root.add(insetPanel);
+
+// MOVE LEGEND
+// Add a small legend title
+insetPanel.add(ui.Label({
+  value: 'Legend',
+  style: {fontWeight: 'bold', fontSize: '13px', margin: '8px 8px 2px 8px'}
+}));
+
+// Add NEW legend row widgets (don't reuse the ones already in your original legend panel)
+insetPanel.add(makeRow('#1a0033', 'Hadal trenches & troughs (>6000m)'));
+insetPanel.add(makeRow('#0d47a1', 'Abyssal plains (3000-6000m)'));
+insetPanel.add(makeRow('#00acc1', 'Continental & island slopes (250-3000m)'));
+insetPanel.add(makeRow('#ff6f00', 'Submarine canyons (>200m, slope >6°)'));
+insetPanel.add(makeRow('#ffffff', 'Marine Protected Areas'));
+
+
+
