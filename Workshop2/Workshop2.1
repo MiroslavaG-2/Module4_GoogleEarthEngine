@@ -139,6 +139,16 @@ var elevGt1500 = dataset.gt(1500).selfMask()
 // improve visualisation of data
 Map.addLayer(elevGt1500.selfMask(), {palette:'fuchsia'}, 'gt 1500m', true, 0.7) 
 
+// APPLY COMPLEX IMAGE FUNCTIONS
+// Use terrain, an algorithm that returns several topographic variables from an elevation image
+var terrain = ee.Terrain.products(dataset);
+print ('terrain', terrain ) // print it to see what's inside
+
+// make images from the bands we are interested in
+var slope = terrain.select(['slope']) 
+var hillshade = terrain.select(['hillshade'])
+Map.addLayer (hillshade)
+Map.addLayer (slope, {palette: ['white', 'darkred', 'black'], min:0, max:45}, 'slope')
 
 
 
