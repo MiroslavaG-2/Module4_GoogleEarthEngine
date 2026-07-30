@@ -13,7 +13,7 @@ Map.setCenter(174.0638, -39.298, 11); // zooms into a volcano in NZ
 // Import SRTM data
 var dataset = ee.Image("CGIAR/SRTM90_V4") // found when looking for SRTM
 // print (dataset) // Look at the data properties
-Map.addLayer(dataset) // adds the dataset to the map window below
+// Map.addLayer(dataset) // adds the dataset to the map window below
 
 // Customise data layers
 /* we can add some parameters to the Map.addLayer. visParms, lets set 
@@ -33,14 +33,14 @@ var elevationVis = {
   hex colour codes, bc you can use a much larger range of colours */
 };
 // Add the data layer to the map
-Map.addLayer(dataset, elevationVis, 'Elevation');
+// Map.addLayer(dataset, elevationVis, 'Elevation');
 
 // FEATURES
 // Add the protected planet data
 var protected_areas = ee.FeatureCollection("WCMC/WDPA/current/polygons")
 // Map.addLayer(protected_areas) //visualize in map
 // add colours and label to see which layers are which
-Map.addLayer(protected_areas, {color: 'darkgreen'}, 'Protected Areas')
+// Map.addLayer(protected_areas, {color: 'darkgreen'}, 'Protected Areas')
 // 
 // 
 // 
@@ -64,7 +64,7 @@ in category 2 national parks */
 
 // Filter only for level II protected areas
 var iucn_pa = protected_areas.filter(ee.Filter.eq('IUCN_CAT', 'II'));
-Map.addLayer(iucn_pa, {color: 'yellow'}, 'National Parks')
+// Map.addLayer(iucn_pa, {color: 'yellow'}, 'National Parks')
 /*Filtering collections can help you find
 specific features in a collection, and can be
 done with anything from the properties */
@@ -90,7 +90,7 @@ var countries = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
 // New Zealand only
 var nz = countries.filter(ee.Filter.equals('country_na', 'New Zealand'))
 // print (nz)
-Map.addLayer(nz) // look at it.
+// Map.addLayer(nz) // look at it.
 
 /* now we use that to apply a spatial filter to 
 the global protected areas data */
@@ -108,14 +108,36 @@ var nz_national_parks = protected_areas
     .filter(ee.Filter.bounds(nz)) // filter to NZ
 
 print ('Number of National Parks in NZ:', nz_national_parks.size())
+// 
+// 
+// 
+// 
+// COMPUTATION IN EARTH ENGINE
+/* After turning off all map layers, for the
+exception of the SRTM layer, we do the following */
+// Change opacity
+Map.addLayer(dataset, elevationVis, 'Elevation', true, 0.6);
+//Computation
+print (dataset) 
+var srtm_fixed = dataset.add(100) /* adds
+a constant to the entire SRTM data */
+// Map.addLayer(srtm_fixed, elevationVis, 'fixed srtm')
 
-
-
-
-
-
-
-
+// THRESHOLDING IMAGES
+/* another common operation is finding all 
+pixels with a value greater than a certain
+elevation threshold */
+var elevGt1500 = dataset.gt(1500) 
+// Map.addLayer(elevGt1500) // Binary white == true
+/* the image output with lots of 0s in places
+less than 1500m in elevation */
+/* we can use the masking functions, which
+masks every 0 value out of an image, so no
+operations can be applied to them */
+var elevGt1500 = dataset.gt(1500).selfMask() 
+// Map.addLayer(elevGt1500)
+// improve visualisation of data
+Map.addLayer(elevGt1500.selfMask(), {palette:'fuchsia'}, 'gt 1500m', true, 0.7) 
 
 
 
