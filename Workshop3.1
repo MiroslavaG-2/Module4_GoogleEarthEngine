@@ -1,3 +1,17 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[117.51220703125, 39.38958420247162],
+          [117.51220703125, 21.478719459704678],
+          [128.23486328125, 21.478719459704678],
+          [128.23486328125, 39.38958420247162]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 // MB5370 - MODULE 4 - WORKSHOP 3
 // NIGHTLIGHTS IN GLOBAL COASTLINES
 // Miroslava Guerrero
@@ -69,6 +83,26 @@ var nightlight = {
 print('nightlight 2000 processed', nl_2000);
 Map.addLayer(nl_2000, nightlight, 'Nighttime Lights 2000');
 Map.addLayer(nl_2013, nightlight, 'Nighttime Lights 2013');
+
+// VECTOR DATA
+// Import grid
+var grid = ee.FeatureCollection('users/murrnick/mb5370/worldgrid_2deg'); // 2 degree grid
+Map.addLayer(grid, {color: 'green'}, 'grid');
+
+// import the coastline dataset
+var coast = ee.FeatureCollection('projects/UQ_intertidal/dataMasks/naturalEarthCoastline_v1'); 
+Map.addLayer(coast, {color: 'yellow'}, 'coast'); 
+
+/* Filter grid to only the cells intersecting 
+with a coastline */
+var coastGrid = grid.filterBounds(coast);
+Map.addLayer(coastGrid, {color: 'blue'}, 'coastal grid cells');
+
+// PREPARING FOR GLOBAL ANALYSIS
+// limit the size of the analysis
+/* fist draw a small geometry and filter for it.
+the smaller the better */
+
 
 
 
