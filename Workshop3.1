@@ -139,7 +139,8 @@ Map.addLayer(nl_change, {palette: ['red', 'black', 'lime'], min: -50, max: 50}, 
 var nl_changePerGrid = nl_change.reduceRegions({
   collection: coastGrid, // or your test area variable, e.g. coastal grid (test area)
   reducer: ee.Reducer.mean(),
-  scale: 1000, // computing at a larger scale for speed
+  scale: 4000, // computing at a larger scale for speed
+  tileScale: 4
 });
 // print(nl_changePerGrid.first()); // look at properties of the first one
 // nightlight change mean 1.618
@@ -181,6 +182,9 @@ Export.table.toAsset({
 
 // REVIEWING RESULTS
 // Visualise your data
-
+var pop_result = ee.FeatureCollection('projects/mb5370-503805/assets/pop_changePerGrid')
+Map.addLayer(pop_result)
+// print (pop_result)
+// print(pop_result.sort('mean', false));
 
 
