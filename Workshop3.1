@@ -56,8 +56,8 @@ var population_vis = {
   ],
   'min': 0.0
 };
-Map.addLayer(population_2000, population_vis, 'population_count_2000');
-Map.addLayer(population_2015, population_vis, 'population_count_2015');
+// Map.addLayer(population_2000, population_vis, 'population_count_2000');
+// Map.addLayer(population_2015, population_vis, 'population_count_2015');
 
 // NIGHTLIGHTS
 var nl = ee.ImageCollection("NOAA/DMSP-OLS/NIGHTTIME_LIGHTS")
@@ -81,13 +81,13 @@ var nightlight = {
   palette: ['000000', 'ffffcc', 'ffcc00', 'ff6600', 'ff0000']
 };
 
-print('nightlight 2000 processed', nl_2000);
-Map.addLayer(nl_2000, nightlight, 'Nighttime Lights 2000');
-Map.addLayer(nl_2013, nightlight, 'Nighttime Lights 2013');
+// print('nightlight 2000 processed', nl_2000);
+// Map.addLayer(nl_2000, nightlight, 'Nighttime Lights 2000');
+// Map.addLayer(nl_2013, nightlight, 'Nighttime Lights 2013');
 
 // VECTOR DATA
 // Import grid
-var grid = ee.FeatureCollection('users/murrnick/mb5370/worldgrid_2deg'); // 2 degree grid
+var grid = ee.FeatureCollection('users/murrnick/mb5370/worldgrid_5deg'); // 2 degree grid
 // Map.addLayer(grid, {color: 'green'}, 'grid');
 
 // import the coastline dataset
@@ -97,7 +97,7 @@ var coast = ee.FeatureCollection('projects/UQ_intertidal/dataMasks/naturalEarthC
 /* Filter grid to only the cells intersecting 
 with a coastline */
 var coastGrid = grid.filterBounds(coast);
-Map.addLayer(coastGrid, {color: 'blue'}, 'coastal grid cells');
+// Map.addLayer(coastGrid, {color: 'blue'}, 'coastal grid cells');
 
 // PREPARING FOR GLOBAL ANALYSIS
 // limit the size of the analysis
@@ -114,7 +114,7 @@ statement */
  var coastGrid = grid
   .filter(ee.Filter.bounds(coast))
   // .filter(ee.Filter.bounds(geometry)); // limits to your small test box
-Map.addLayer(coastGrid, {color: 'firebrick'}, 'coastal grid (test area)');
+// Map.addLayer(coastGrid, {color: 'firebrick'}, 'coastal grid (test area)');
 
 
 // GLOBAL CHANGE
@@ -180,6 +180,7 @@ Export.table.toAsset({
 });
 
 // REVIEWING RESULTS
+// Visualise your data
 
 
 
