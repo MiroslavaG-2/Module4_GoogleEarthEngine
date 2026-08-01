@@ -30,7 +30,7 @@ where on earth there changes have occured */
 transformed by human development */
 // confine analysis to first 15 yrs of 20th century
 
-Map.setCenter(122.5, 36.5, 6); // yellow sea zone
+// Map.setCenter(122.5, 36.5, 6); // yellow sea zone
 
 // IMAGE DATA
 // POPULATION
@@ -127,13 +127,13 @@ change in population over time */
 var pop_change = population_2015
   .subtract(population_2000)
   .clip(coastGrid); // or use your test area variable if still testing on the small box
-Map.addLayer(pop_change, {palette: ['red', 'black', 'lime'], min: -500, max: 500}, 'pop_change', true, 0.9);
+// Map.addLayer(pop_change, {palette: ['red', 'black', 'lime'], min: -500, max: 500}, 'pop_change', true, 0.9);
 
 // Nightlight change (2013 minus 2000)
 var nl_change = nl_2013
   .subtract(nl_2000)
   .clip(coastGrid); // same here
-Map.addLayer(nl_change, {palette: ['red', 'black', 'lime'], min: -50, max: 50}, 'nl_change', true, 0.9);
+// Map.addLayer(nl_change, {palette: ['red', 'black', 'lime'], min: -50, max: 50}, 'nl_change', true, 0.9);
 
 // average change in nightlights per grid cell
 var nl_changePerGrid = nl_change.reduceRegions({
@@ -167,39 +167,106 @@ proceed by removing limitations */
 // export to the assets tab
 // Export the result to asset
 // Approx 10-20 minute export for scale = 1000.
-Export.table.toAsset({
+/*(Export.table.toAsset({
   collection: pop_changePerGrid,
   description: 'export_pop_toAsset',
   assetId: 'pop_changePerGrid'
-});
+});*/
 
-Export.table.toAsset({
+/*Export.table.toAsset({
   collection: nl_changePerGrid,
   description: 'export_nl_toAsset',
   assetId: 'nl_changePerGrid'
-});
+});*/
 
 // REVIEWING RESULTS
 // Visualise your data
 var pop_result = ee.FeatureCollection('projects/mb5370-503805/assets/pop_changePerGrid')
-Map.addLayer(pop_result)
+// Map.addLayer(pop_result)
 // print (pop_result)
 // print(pop_result.sort('mean', false));
 
 
 // Visualise result
 var empty = ee.Image().byte(); // make an empty image
-var palette = ['green', 'yellow', 'orange', 'red'];
+// var palette = ['green', 'yellow', 'orange', 'red'];
 var popChangePerGrid = empty.paint({
   featureCollection: pop_result,
   color: 'mean' // the property name to colour by - confirm this matches your actual attribute
 });
 
-Map.addLayer(popChangePerGrid, {max: 112, palette: palette}, 'popChange_result');
+// Map.addLayer(popChangePerGrid, {max: 112, palette: palette}, 'popChange_result');
 
 
+// Visualise your nightlight change data
+var nl_result = ee.FeatureCollection('projects/mb5370-503805/assets/nl_changePerGrid'); // your actual asset ID
+// Map.addLayer(nl_result);
+// print(nl_result);
+// print(nl_result.sort('mean', false)); // false = descending, so highest change appears first
+
+var empty = ee.Image().byte(); // blank canvas to paint onto
+// var palette = ['green', 'yellow', 'orange', 'red'];
+var nlChangePerGrid = empty.paint({
+  featureCollection: nl_result,
+  color: 'mean' // confirm this matches the actual property name from your Inspector check
+});
+// Map.addLayer(nlChangePerGrid, {max: 20, palette: palette}, 'nlChange_result');
 
 
+print('Max nightlight change:', nl_result.aggregate_max('mean'));
+print('Max population change:', pop_result.aggregate_max('mean'));
+
+
+// ============================
+// LAYER VISUALISATION
+// ============================
+
+var nlPalette = ['08306b', '4292c6', '9ecae1', 'fee08b'];
+var popPalette = ['800026', 'e31a1c', 'fd8d3c', 'ffffb2'];
+
+Map.addLayer(nlChangePerGrid, {max: 8.47, palette: nlPalette}, 'nlChange_result', true, 1.0);
+Map.addLayer(popChangePerGrid, {max: 359, palette: popPalette}, 'popChange_result', true, 0.6);
+
+// ============================
+// LEGEND PANEL
+// ============================
+
+var legend = ui.Panel({style: {width: '250px', padding: '8px 15px'}});
+
+var legendTitle = ui.Label({
+  value: 'Coastal Change (2000–2013/2015)',
+  style: {fontWeight: 'bold', fontSize: '15px', margin: '0 0 6px 0'}
+});
+legend.add(legendTitle);
+
+var makeRow = function(color, name) {
+  var colorBox = ui.Label({
+    style: {backgroundColor: color, padding: '8px', margin: '4px 0 4px 0'}
+  });
+  var description = ui.Label({value: name, style: {margin: '4px 0 4px 6px'}});
+  return ui.Panel({widgets: [colorBox, description], layout: ui.Panel.Layout.Flow('horizontal')});
+};
+
+legend.add(ui.Label({value: 'Nightlight change', style: {fontWeight: 'bold', margin: '6px 0 2px 0'}}));
+legend.add(makeRow('#08306b', 'Low increase'));
+legend.add(makeRow('#9ecae1', 'Moderate increase'));
+legend.add(makeRow('#fee08b', 'High increase (max ~8.5)'));
+
+legend.add(ui.Label({value: 'Population change', style: {fontWeight: 'bold', margin: '10px 0 2px 0'}}));
+legend.add(makeRow('#800026', 'Low increase'));
+legend.add(makeRow('#fd8d3c', 'Moderate increase'));
+legend.add(makeRow('#ffffb2', 'High increase (max ~359)'));
+
+legend.add(ui.Label({
+  value: 'Note: overlapping colours (e.g. purple/brown tones) indicate areas with high change in both variables.',
+  style: {fontSize: '11px', color: 'gray', margin: '10px 0 0 0', whiteSpace: 'wrap'}
+}));
+
+// ============================
+// LAYOUT: MAP + LEGEND SIDE BY SIDE
+// ============================
+
+ui.root.insert(1, legend);
 
 
 
