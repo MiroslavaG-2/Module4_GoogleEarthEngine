@@ -268,7 +268,8 @@ legend.add(ui.Label({
 
 ui.root.insert(1, legend);
 
-Map.setCenter(0, 0, 2); // longitude, latitude, zoom level (2 = whole world view)
+Map.setCenter(0, 0, 1); // longitude, latitude, zoom level (2 = whole world view)
 
-
+var pop_result = ee.FeatureCollection('projects/mb5370-503805/assets/pop_changePerGrid')
+var nl_result = ee.FeatureCollection('projects/mb5370-503805/assets/nl_changePerGrid');
 
