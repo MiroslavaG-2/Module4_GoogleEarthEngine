@@ -47,7 +47,18 @@ var Heron = /* color: #538c00 */ee.Feature(
           "station": "Mexico",
           "system:index": "0"
         }),
-    geometry = /* color: #999900 */ee.Geometry.Point([-87.81146867155923, 16.74141414181991]);
+    Belize_GloversStation = /* color: #999900 */ee.Feature(
+        ee.Geometry.Point([-87.81146867155923, 16.74141414181991]),
+        {
+          "station": "BelizeIsland",
+          "system:index": "0"
+        }),
+    Egypt_NIOF = /* color: #009999 */ee.Feature(
+        ee.Geometry.Point([33.7722923419376, 27.284174209749054]),
+        {
+          "station": "Egypt",
+          "system:index": "0"
+        });
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // MB5370 - MODULE 4 - WORKSHOP 4
 // ALLEN CORAL ATLAS
@@ -74,8 +85,30 @@ features for each research station's coordinate
 locations */
 
 Map.setOptions('SATELLITE')
-Map.setCenter( 146.49992691, -18.63411616, 17)// zoom
+// Map.setCenter( 146.49992691, -18.63411616, 17)// zoom to different stations
 
+/* after selecting 10 stations, create a feature
+collection from the features that were done */
+var field_stations = ee.FeatureCollection([Heron, Hamilton, Lizard,
+Orpheus, Daydream, NewGuinea_Nago, Philippines_IMRS,
+Mexico_MARES, Belize_GloversStation, Egypt_NIOF])
+print (field_stations)
 
+// DATA
+// using the Allan Coral Atlas benthic cover map
+// IMPORT THE ACA DATA
+// import
+var aca = ee.Image('ACA/reef_habitat/v2_0'); // note: NO underscore between "v2" and "0" in the path
 
+// print and review
+print('ACA Reef Habitat Dataset', aca);
 
+// add ACA to your map and look at it where your research stations are
+Map.setOptions('SATELLITE');
+Map.centerObject(field_stations, 4);
+var benthicHabitat = aca.select('benthic').selfMask();
+Map.addLayer(benthicHabitat, {}, 'Benthic habitat');
+
+// ID coral pixels
+var coral = benthicHabitat.eq(15).selfMask();
+Map.addLayer(coral, {palette: ['ff6161']}, 'Coral/Algae cover');
