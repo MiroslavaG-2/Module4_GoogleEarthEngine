@@ -1,3 +1,54 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var Heron = /* color: #538c00 */ee.Feature(
+        ee.Geometry.Point([151.91126524609663, -23.44253659341701]),
+        {
+          "station": "HeronIsland",
+          "system:index": "0"
+        }),
+    Hamilton = /* color: #0b4a8b */ee.Feature(
+        ee.Geometry.Point([148.95782476361956, -20.346565437331776]),
+        {
+          "station": "HamiltonIsland",
+          "system:index": "0"
+        }),
+    Lizard = /* color: #ffc82d */ee.Feature(
+        ee.Geometry.Point([145.44609909483125, -14.667788707871422]),
+        {
+          "station": "LizardIsland",
+          "system:index": "0"
+        }),
+    Daydream = /* color: #00ffff */ee.Feature(
+        ee.Geometry.Point([148.81327122791933, -20.252625889434356]),
+        {
+          "station": "DaydreamIsland",
+          "system:index": "0"
+        }),
+    Orpheus = /* color: #bf04c2 */ee.Feature(
+        ee.Geometry.Point([146.48454962655663, -18.61257529807626]),
+        {
+          "station": "OrpheusIsland",
+          "system:index": "0"
+        }),
+    NewGuinea_Nago = /* color: #ff0000 */ee.Feature(
+        ee.Geometry.Point([150.7912863868747, -2.5789665177818217]),
+        {
+          "station": "NewGuinea",
+          "system:index": "0"
+        }),
+    Philippines_IMRS = /* color: #00ff00 */ee.Feature(
+        ee.Geometry.Point([123.2851841934884, 9.211344327237356]),
+        {
+          "station": "Philippines",
+          "system:index": "0"
+        }),
+    Mexico_MARES = /* color: #0000ff */ee.Feature(
+        ee.Geometry.Point([-87.71386792102157, 18.704484576116133]),
+        {
+          "station": "Mexico",
+          "system:index": "0"
+        }),
+    geometry = /* color: #999900 */ee.Geometry.Point([-87.81146867155923, 16.74141414181991]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 // MB5370 - MODULE 4 - WORKSHOP 4
 // ALLEN CORAL ATLAS
 // Miroslava Guerrero
@@ -15,4 +66,16 @@ the station */
 
 // GLOBAL VARIABLES
 var distance = 800 // metres we are allowed to snorkel from the station
+
+// RESEARCH STATION LOCATIONS
+/* we need to make a geometry of the locations
+of some research stations. We will make point 
+features for each research station's coordinate
+locations */
+
+Map.setOptions('SATELLITE')
+Map.setCenter( 146.49992691, -18.63411616, 17)// zoom
+
+
+
 
