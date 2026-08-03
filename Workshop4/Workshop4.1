@@ -83,10 +83,8 @@ var distance = 800 // metres we are allowed to snorkel from the station
 of some research stations. We will make point 
 features for each research station's coordinate
 locations */
-
 Map.setOptions('SATELLITE')
 // Map.setCenter( 146.49992691, -18.63411616, 17)// zoom to different stations
-
 /* after selecting 10 stations, create a feature
 collection from the features that were done */
 var field_stations = ee.FeatureCollection([Heron, Hamilton, Lizard,
@@ -99,16 +97,57 @@ print (field_stations)
 // IMPORT THE ACA DATA
 // import
 var aca = ee.Image('ACA/reef_habitat/v2_0'); // note: NO underscore between "v2" and "0" in the path
-
 // print and review
 print('ACA Reef Habitat Dataset', aca);
-
 // add ACA to your map and look at it where your research stations are
-Map.setOptions('SATELLITE');
-Map.centerObject(field_stations, 4);
+// Map.centerObject(field_stations, 4);
 var benthicHabitat = aca.select('benthic').selfMask();
-Map.addLayer(benthicHabitat, {}, 'Benthic habitat');
+// Map.addLayer(benthicHabitat, {}, 'Benthic habitat');
 
-// ID coral pixels
-var coral = benthicHabitat.eq(15).selfMask();
-Map.addLayer(coral, {palette: ['ff6161']}, 'Coral/Algae cover');
+// SELECTING CORALS ONLY
+// Select the appropriate band to access benthic (not geomorphic data)
+var benthic = aca.select('benthic');
+// Build a binary image where 1 = coral/algae and 0 = everything else.
+var coral = benthic.eq(15);
+// Mask all 0 values.
+var coralMasked = coral.selfMask();
+// Map.addLayer(coralMasked, {palette: ['ff6161']}, 'Coral/Algae');
+
+// BUFFERING STATIONS
+// Make a buffer
+// GLOBAL VARIABLES
+var distance = 800 // metres we are allowed to snorkel from the station
+
+// Make a buffer
+var buffered = ee.Feature(field_stations.first()).buffer(distance);
+// Map.centerObject(buffered, 14);
+// Map.addLayer(buffered, {color: 'yellow'}, 'Buffered station (test)');
+
+// MAPPING THE BUFFER FUNCTION ACROSS STATIONS
+// write a function that applies a buffer
+var bufferer = function(feature) {
+  var buffered = feature.buffer(distance); // using your 'distance' variable (800m)
+  return buffered;
+};
+// Use .map to work one station at a time
+var bufferedStations = field_stations.map(bufferer);
+// Check out your result
+print('Buffered stations', bufferedStations);
+Map.addLayer(bufferedStations, {color: 'yellow'}, 'Buffered stations');
+
+// CALCULATE CORAL AREA WITHIN EACH BUFFER
+// Compute area of coral within buffer
+var coral_area = coral // binary 1 == coral
+  .multiply(ee.Image.pixelArea()) // get the area of each pixel
+  .reduceRegions({
+    reducer: ee.Reducer.sum(), // sum all pixel areas together
+    collection: bufferedStations,
+    scale: 5
+  });
+
+// Check it out using addLayer and print
+print(coral_area, 'coral area');
+Map.addLayer(coral_area, {}, 'Coral area per station');
+
+
+
