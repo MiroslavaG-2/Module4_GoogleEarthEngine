@@ -58,7 +58,19 @@ var Heron = /* color: #538c00 */ee.Feature(
         {
           "station": "Egypt",
           "system:index": "0"
-        });
+        }),
+    geometry = 
+    /* color: #ff00ff */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[150.77315431776688, -2.5641386490878104],
+          [150.77315431776688, -2.5898618152153],
+          [150.80173593702958, -2.5898618152153],
+          [150.80173593702958, -2.5641386490878104]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 // MB5370 - MODULE 4 - WORKSHOP 4
 // ALLEN CORAL ATLAS
@@ -90,7 +102,7 @@ collection from the features that were done */
 var field_stations = ee.FeatureCollection([Heron, Hamilton, Lizard,
 Orpheus, Daydream, NewGuinea_Nago, Philippines_IMRS,
 Mexico_MARES, Belize_GloversStation, Egypt_NIOF])
-print (field_stations)
+// print (field_stations)
 
 // DATA
 // using the Allan Coral Atlas benthic cover map
@@ -98,7 +110,7 @@ print (field_stations)
 // import
 var aca = ee.Image('ACA/reef_habitat/v2_0'); // note: NO underscore between "v2" and "0" in the path
 // print and review
-print('ACA Reef Habitat Dataset', aca);
+// print('ACA Reef Habitat Dataset', aca);
 // add ACA to your map and look at it where your research stations are
 // Map.centerObject(field_stations, 4);
 var benthicHabitat = aca.select('benthic').selfMask();
@@ -111,7 +123,7 @@ var benthic = aca.select('benthic');
 var coral = benthic.eq(15);
 // Mask all 0 values.
 var coralMasked = coral.selfMask();
-// Map.addLayer(coralMasked, {palette: ['ff6161']}, 'Coral/Algae');
+Map.addLayer(coralMasked, {palette: ['ff6161']}, 'Coral/Algae');
 
 // BUFFERING STATIONS
 // Make a buffer
@@ -132,8 +144,8 @@ var bufferer = function(feature) {
 // Use .map to work one station at a time
 var bufferedStations = field_stations.map(bufferer);
 // Check out your result
-print('Buffered stations', bufferedStations);
-Map.addLayer(bufferedStations, {color: 'yellow'}, 'Buffered stations');
+// print('Buffered stations', bufferedStations);
+// Map.addLayer(bufferedStations, {color: 'yellow'}, 'Buffered stations');
 
 // CALCULATE CORAL AREA WITHIN EACH BUFFER
 // Compute area of coral within buffer
@@ -146,8 +158,35 @@ var coral_area = coral // binary 1 == coral
   });
 
 // Check it out using addLayer and print
-print(coral_area, 'coral area');
-Map.addLayer(coral_area, {}, 'Coral area per station');
+// print(coral_area, 'coral area');
+Map.addLayer(coral_area, {color: '00cc44'}, 'Coral area per station', true, 0.5);
 
+// SORT AND FIND TOP CANDIDATE STATION
+print('Stations ranked by coral area:', coral_area.sort('sum', false)); // descending, highest coral area first
+// Station with highest nearby coral
+// Nago Island Marine Research Facility
+// Papua New Guinea
+// coral sum: 438253.31
+
+
+// PACKAGE UP RESULTS AND EXPORT
+// Export your coral area results (table/CSV) to Google Drive
+Export.table.toDrive({
+  collection: coral_area, // FYI - type: featureCollection
+  description: 'exportToDrive',
+  fileNamePrefix: 'research_stations',
+  fileFormat: 'CSV'
+});
+
+// Clip and export the area around your highest-coral station (NewGuinea_Nago)
+var exportImage = aca.clip(geometry); // draw your geometry box around NewGuinea_Nago's location first
+Map.addLayer(exportImage);
+Export.image.toDrive({
+  image: exportImage,
+  description: 'exportImageToDrive',
+  fileNamePrefix: 'aca_newguinea_nago', // updated filename to match
+  fileFormat: 'GeoTIFF',
+  scale: 5
+});
 
 
