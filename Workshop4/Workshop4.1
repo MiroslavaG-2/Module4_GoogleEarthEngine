@@ -61,6 +61,7 @@ var Heron = /* color: #538c00 */ee.Feature(
         }),
     geometry = 
     /* color: #ff00ff */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -171,10 +172,11 @@ print('Stations ranked by coral area:', coral_area.sort('sum', false)); // desce
 
 // PACKAGE UP RESULTS AND EXPORT
 // Export your coral area results (table/CSV) to Google Drive
+var coral_area_sorted = coral_area.sort('sum', false); // descending, highest coral area first
 Export.table.toDrive({
-  collection: coral_area, // FYI - type: featureCollection
+  collection: coral_area_sorted,
   description: 'exportToDrive',
-  fileNamePrefix: 'research_stations',
+  fileNamePrefix: 'research_stations_ranked',
   fileFormat: 'CSV'
 });
 
