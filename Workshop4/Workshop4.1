@@ -173,22 +173,95 @@ print('Stations ranked by coral area:', coral_area.sort('sum', false)); // desce
 // PACKAGE UP RESULTS AND EXPORT
 // Export your coral area results (table/CSV) to Google Drive
 var coral_area_sorted = coral_area.sort('sum', false); // descending, highest coral area first
-Export.table.toDrive({
+/*Export.table.toDrive({
   collection: coral_area_sorted,
   description: 'exportToDrive',
   fileNamePrefix: 'research_stations_ranked',
   fileFormat: 'CSV'
 });
+*/
 
 // Clip and export the area around your highest-coral station (NewGuinea_Nago)
 var exportImage = aca.clip(geometry); // draw your geometry box around NewGuinea_Nago's location first
-Map.addLayer(exportImage);
-Export.image.toDrive({
+// Map.addLayer(exportImage);
+/* Export.image.toDrive({
   image: exportImage,
   description: 'exportImageToDrive',
   fileNamePrefix: 'aca_newguinea_nago', // updated filename to match
   fileFormat: 'GeoTIFF',
   scale: 5
+}); 
+*/
+
+// MAP FOR DISPLAY ON APP
+// ============================
+// MAIN MAP — focused on NewGuinea_Nago
+// ============================
+Map.centerObject(NewGuinea_Nago, 13);
+
+// ============================
+// INSET MAP — dropdown to explore other ranked stations
+// ============================
+
+var insetMap = ui.Map();
+insetMap.setOptions('SATELLITE');
+insetMap.centerObject(Belize_GloversStation, 13); // default to 2nd highest
+
+// Add the same coral layers to the inset
+insetMap.addLayer(coral, {palette: ['ff6161']}, 'Coral/Algae');
+insetMap.addLayer(coral_area, {color: 'green'}, 'Coral area per station', true, 0.5);
+
+var insetLabel = ui.Label({
+  value: 'Ranked stations: BelizeIsland',
+  style: {fontWeight: 'bold', fontSize: '14px', margin: '4px 8px'}
 });
 
+// Ranked stations (excluding NewGuinea, since it's the main map focus)
+var rankedStations = {
+  'BelizeIsland': Belize_GloversStation,
+  'HeronIsland': Heron,
+  'Mexico': Mexico_MARES,
+  'Egypt': Egypt_NIOF,
+  'HamiltonIsland': Hamilton,
+  'LizardIsland': Lizard,
+  'Philippines': Philippines_IMRS,
+  'OrpheusIsland': Orpheus,
+  'DaydreamIsland': Daydream
+};
+
+var select = ui.Select({
+  items: Object.keys(rankedStations),
+  onChange: function(name) {
+    insetMap.centerObject(rankedStations[name], 13);
+    insetLabel.setValue('Ranked stations: ' + name);
+  },
+  value: 'BelizeIsland'
+});
+
+// ============================
+// LEGEND — stacked underneath the inset map
+// ============================
+var makeRow = function(color, name) {
+  var colorBox = ui.Label({
+    style: {backgroundColor: color, padding: '8px', margin: '4px 0 4px 0'}
+  });
+  var description = ui.Label({value: name, style: {margin: '4px 0 4px 6px'}});
+  return ui.Panel({widgets: [colorBox, description], layout: ui.Panel.Layout.Flow('horizontal')});
+};
+var legendTitle = ui.Label({
+  value: 'Legend',
+  style: {fontWeight: 'bold', fontSize: '13px', margin: '10px 8px 2px 8px'}
+});
+
+// ============================
+// COMBINE INSET + DROPDOWN + LEGEND INTO ONE SIDE PANEL
+// ============================
+var insetPanel = ui.Panel({
+  widgets: [insetLabel, select, insetMap, legendTitle],
+  style: {width: '350px', position: 'top-right'}
+});
+insetMap.style().set({height: '260px'});
+insetPanel.add(makeRow('#00cc44', 'Coral area per station (radius)'));
+insetPanel.add(makeRow('#ff6161', 'Coral/Algae cover'));
+ui.root.insert(1, insetPanel);
 
