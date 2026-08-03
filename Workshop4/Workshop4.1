@@ -1,3 +1,192 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var Heron = /* color: #538c00 */ee.Feature(
+        ee.Geometry.Point([151.91126524609663, -23.44253659341701]),
+        {
+          "station": "HeronIsland",
+          "system:index": "0"
+        }),
+    Hamilton = /* color: #0b4a8b */ee.Feature(
+        ee.Geometry.Point([148.95782476361956, -20.346565437331776]),
+        {
+          "station": "HamiltonIsland",
+          "system:index": "0"
+        }),
+    Lizard = /* color: #ffc82d */ee.Feature(
+        ee.Geometry.Point([145.44609909483125, -14.667788707871422]),
+        {
+          "station": "LizardIsland",
+          "system:index": "0"
+        }),
+    Daydream = /* color: #00ffff */ee.Feature(
+        ee.Geometry.Point([148.81327122791933, -20.252625889434356]),
+        {
+          "station": "DaydreamIsland",
+          "system:index": "0"
+        }),
+    Orpheus = /* color: #bf04c2 */ee.Feature(
+        ee.Geometry.Point([146.48454962655663, -18.61257529807626]),
+        {
+          "station": "OrpheusIsland",
+          "system:index": "0"
+        }),
+    NewGuinea_Nago = /* color: #ff0000 */ee.Feature(
+        ee.Geometry.Point([150.7912863868747, -2.5789665177818217]),
+        {
+          "station": "NewGuinea",
+          "system:index": "0"
+        }),
+    Philippines_IMRS = /* color: #00ff00 */ee.Feature(
+        ee.Geometry.Point([123.2851841934884, 9.211344327237356]),
+        {
+          "station": "Philippines",
+          "system:index": "0"
+        }),
+    Mexico_MARES = /* color: #0000ff */ee.Feature(
+        ee.Geometry.Point([-87.71386792102157, 18.704484576116133]),
+        {
+          "station": "Mexico",
+          "system:index": "0"
+        }),
+    Belize_GloversStation = /* color: #999900 */ee.Feature(
+        ee.Geometry.Point([-87.81146867155923, 16.74141414181991]),
+        {
+          "station": "BelizeIsland",
+          "system:index": "0"
+        }),
+    Egypt_NIOF = /* color: #009999 */ee.Feature(
+        ee.Geometry.Point([33.7722923419376, 27.284174209749054]),
+        {
+          "station": "Egypt",
+          "system:index": "0"
+        }),
+    geometry = 
+    /* color: #ff00ff */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[150.77315431776688, -2.5641386490878104],
+          [150.77315431776688, -2.5898618152153],
+          [150.80173593702958, -2.5898618152153],
+          [150.80173593702958, -2.5641386490878104]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 // MB5370 - MODULE 4 - WORKSHOP 4
 // ALLEN CORAL ATLAS
 // Miroslava Guerrero
+
+// THE PROBLEM
+/* We are field biologiests trying to decide which
+research station to conduct field work on. We are
+mainly interested in coral cover. We want to maximise
+the amount of coral that can be sampled while at 
+the station, and can only conduct field work
+from the shore*/
+/* need to find research station with the most 
+coral cover whithin snorkelling distance from 
+the station */
+
+// GLOBAL VARIABLES
+var distance = 800 // metres we are allowed to snorkel from the station
+
+// RESEARCH STATION LOCATIONS
+/* we need to make a geometry of the locations
+of some research stations. We will make point 
+features for each research station's coordinate
+locations */
+Map.setOptions('SATELLITE')
+// Map.setCenter( 146.49992691, -18.63411616, 17)// zoom to different stations
+/* after selecting 10 stations, create a feature
+collection from the features that were done */
+var field_stations = ee.FeatureCollection([Heron, Hamilton, Lizard,
+Orpheus, Daydream, NewGuinea_Nago, Philippines_IMRS,
+Mexico_MARES, Belize_GloversStation, Egypt_NIOF])
+// print (field_stations)
+
+// DATA
+// using the Allan Coral Atlas benthic cover map
+// IMPORT THE ACA DATA
+// import
+var aca = ee.Image('ACA/reef_habitat/v2_0'); // note: NO underscore between "v2" and "0" in the path
+// print and review
+// print('ACA Reef Habitat Dataset', aca);
+// add ACA to your map and look at it where your research stations are
+// Map.centerObject(field_stations, 4);
+var benthicHabitat = aca.select('benthic').selfMask();
+// Map.addLayer(benthicHabitat, {}, 'Benthic habitat');
+
+// SELECTING CORALS ONLY
+// Select the appropriate band to access benthic (not geomorphic data)
+var benthic = aca.select('benthic');
+// Build a binary image where 1 = coral/algae and 0 = everything else.
+var coral = benthic.eq(15);
+// Mask all 0 values.
+var coralMasked = coral.selfMask();
+Map.addLayer(coralMasked, {palette: ['ff6161']}, 'Coral/Algae');
+
+// BUFFERING STATIONS
+// Make a buffer
+// GLOBAL VARIABLES
+var distance = 800 // metres we are allowed to snorkel from the station
+
+// Make a buffer
+var buffered = ee.Feature(field_stations.first()).buffer(distance);
+// Map.centerObject(buffered, 14);
+// Map.addLayer(buffered, {color: 'yellow'}, 'Buffered station (test)');
+
+// MAPPING THE BUFFER FUNCTION ACROSS STATIONS
+// write a function that applies a buffer
+var bufferer = function(feature) {
+  var buffered = feature.buffer(distance); // using your 'distance' variable (800m)
+  return buffered;
+};
+// Use .map to work one station at a time
+var bufferedStations = field_stations.map(bufferer);
+// Check out your result
+// print('Buffered stations', bufferedStations);
+// Map.addLayer(bufferedStations, {color: 'yellow'}, 'Buffered stations');
+
+// CALCULATE CORAL AREA WITHIN EACH BUFFER
+// Compute area of coral within buffer
+var coral_area = coral // binary 1 == coral
+  .multiply(ee.Image.pixelArea()) // get the area of each pixel
+  .reduceRegions({
+    reducer: ee.Reducer.sum(), // sum all pixel areas together
+    collection: bufferedStations,
+    scale: 5
+  });
+
+// Check it out using addLayer and print
+// print(coral_area, 'coral area');
+Map.addLayer(coral_area, {color: '00cc44'}, 'Coral area per station', true, 0.5);
+
+// SORT AND FIND TOP CANDIDATE STATION
+print('Stations ranked by coral area:', coral_area.sort('sum', false)); // descending, highest coral area first
+// Station with highest nearby coral
+// Nago Island Marine Research Facility
+// Papua New Guinea
+// coral sum: 438253.31
+
+
+// PACKAGE UP RESULTS AND EXPORT
+// Export your coral area results (table/CSV) to Google Drive
+Export.table.toDrive({
+  collection: coral_area, // FYI - type: featureCollection
+  description: 'exportToDrive',
+  fileNamePrefix: 'research_stations',
+  fileFormat: 'CSV'
+});
+
+// Clip and export the area around your highest-coral station (NewGuinea_Nago)
+var exportImage = aca.clip(geometry); // draw your geometry box around NewGuinea_Nago's location first
+Map.addLayer(exportImage);
+Export.image.toDrive({
+  image: exportImage,
+  description: 'exportImageToDrive',
+  fileNamePrefix: 'aca_newguinea_nago', // updated filename to match
+  fileFormat: 'GeoTIFF',
+  scale: 5
+});
+
+
